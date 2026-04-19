@@ -22,15 +22,15 @@ head(season_2024, 10)
 # Calculate team home and away wins
 # -------------------------
 season_2024 <- season_2024 %>%
-  mutate(Winner = ifelse(G > G.1, Visitor, Home))
+  mutate(Winner = ifelse(Visitor.Goals > Home.Goals, Visitor, Home))
 
 home_wins <- season_2024 %>%
   group_by(Home) %>%
-  summarise(Home_Wins = sum(G.1 > G, na.rm = TRUE), .groups = "drop")
+  summarise(Home_Wins = sum(Home.Goals > Visitor.Goals, na.rm = TRUE), .groups = "drop")
 
 away_wins <- season_2024 %>%
   group_by(Visitor) %>%
-  summarise(Away_Wins = sum(G > G.1, na.rm = TRUE), .groups = "drop")
+  summarise(Away_Wins = sum(Visitor.Goals > Home.Goals, na.rm = TRUE), .groups = "drop")
 
 team_wins <- full_join(home_wins, away_wins, by = c("Home" = "Visitor")) %>%
   rename(Team = Home) %>%
